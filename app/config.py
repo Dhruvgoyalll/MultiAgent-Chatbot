@@ -1,9 +1,9 @@
-from dotenv import load_dotenv
-import os
+import streamlit as st
 
-load_dotenv()
+# Access API keys from Streamlit secrets
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+TAVILY_API_KEY = st.secrets["TAVILY_API_KEY"]
 
-
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
+# Now you can use these keys in your application
+st.write(GROQ_API_KEY)
