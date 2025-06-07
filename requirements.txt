@@ -5,5 +5,7 @@ langchain_groq
 langchain_openai
 python_dotenv
 uvicorn
+pydantic
+requests
 
 # pip install -r requirments.txt
