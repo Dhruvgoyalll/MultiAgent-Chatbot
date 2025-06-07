@@ -8,5 +8,6 @@ uvicorn
 pydantic
 requests
 fastapi
+langgraph
 
 # pip install -r requirments.txt
