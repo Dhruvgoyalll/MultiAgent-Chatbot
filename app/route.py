@@ -24,6 +24,10 @@ from fastapi import APIRouter
 from app.model import RequestState
 from agents.ai_agents import get_response_from_ai_agent
 from fastapi.responses import JSONResponse
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 router = APIRouter()
 
@@ -48,16 +52,32 @@ def chat_endpoint(request: RequestState):
             provider=request.model_provider,
         )
 
+        # Log the AI response to inspect its structure
+        logging.info(f"AI Response: {ai_response}")
+
         # Ensure it's a valid response (dict with 'response' key)
-        if isinstance(ai_response, dict) and "response" in ai_response:
-            return JSONResponse(content=ai_response)
+        if isinstance(ai_response, dict):
+            # Check if 'response' key exists in the AI response
+            if "response" in ai_response:
+                return JSONResponse(content=ai_response)
+            # Log the structure of ai_response if 'response' is missing
+            else:
+                logging.error(f"Unexpected AI response format: Missing 'response' key. Response: {ai_response}")
+                return JSONResponse(
+                    status_code=500,
+                    content={"response": "⚠️ Unexpected response format from AI agent. Missing 'response' key."}
+                )
         else:
+            # Log when AI response is not a dictionary
+            logging.error(f"Unexpected AI response format: Expected dictionary, but got {type(ai_response)}. Response: {ai_response}")
             return JSONResponse(
                 status_code=500,
-                content={"response": "⚠️ Unexpected response format from AI agent."}
+                content={"response": "⚠️ Unexpected response format from AI agent. Expected dictionary."}
             )
 
     except Exception as e:
+        # Catch any other unexpected errors
+        logging.exception("Internal server error")
         return JSONResponse(
             status_code=500,
             content={"response": f"💥 Internal server error: {str(e)}"}
